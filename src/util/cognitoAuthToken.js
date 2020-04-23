@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import config from "../config.js";
-const jwt = require("./jwt");
+const { claimsJWT } = require("./decode-verify-jwt.js");
 const { HYDRA_OAUTH2_INTROSPECT_URL } = config;
 
 /**
