@@ -14,6 +14,8 @@ const { HYDRA_OAUTH2_INTROSPECT_URL } = config;
  * @returns {Object} JSON object
  */
 export default async function cognitoAuthToken(token) {
+  console.log('==TOKEN==')
+  console.log(token)
   const response = await fetch(HYDRA_OAUTH2_INTROSPECT_URL, {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     method: "POST",
