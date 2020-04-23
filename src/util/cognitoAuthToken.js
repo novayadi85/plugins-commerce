@@ -1,19 +1,19 @@
 import fetch from "node-fetch";
 import config from "../config.js";
-
+const jwt = require("./jwt");
 const { HYDRA_OAUTH2_INTROSPECT_URL } = config;
 
 /**
  * Given an Authorization Bearer token it returns a JSON object with user
  * properties and claims found
  *
- * @name expandAuthToken
+ * @name cognitoAuthToken
  * @method
  * @summary Expands an Auth token
  * @param {String} token Auth token
  * @returns {Object} JSON object
  */
-export default async function expandAuthToken(token) {
+export default async function cognitoAuthToken(token) {
   const response = await fetch(HYDRA_OAUTH2_INTROSPECT_URL, {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     method: "POST",

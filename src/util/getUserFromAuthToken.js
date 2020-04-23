@@ -1,5 +1,5 @@
 import Logger from "@reactioncommerce/logger";
-import expandAuthToken from "./expandAuthToken.js";
+import cognitoAuthToken from "./cognitoAuthToken.js";
 
 /**
  * Given an Authorization Bearer token and the current context, returns the user document
@@ -19,7 +19,7 @@ import expandAuthToken from "./expandAuthToken.js";
 async function getUserFromAuthToken(loginToken, context) {
   const token = loginToken.replace(/bearer\s/gi, "");
 
-  const tokenObj = await expandAuthToken(token);
+  const tokenObj = await cognitoAuthToken(token);
   if (!tokenObj) {
     Logger.debug("No token object");
     throw new Error("No token object");
