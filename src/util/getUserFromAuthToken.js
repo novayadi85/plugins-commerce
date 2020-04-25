@@ -1,7 +1,10 @@
+/* eslint-disable require-jsdoc */
+/* eslint-disable no-console */
 import Logger from "@reactioncommerce/logger";
+import CognitoIdentityServiceProvider from "aws-sdk/clients/cognitoidentityserviceprovider";
 import cognitoAuthToken from "./cognitoAuthToken.js";
-import cognitoidentityserviceprovider from './cognitoIdentityProvider.js'
 
+const cognitoidentityserviceprovider = new CognitoIdentityServiceProvider();
 /**
  * Given an Authorization Bearer token and the current context, returns the user document
  * for that token after performing token checks.
@@ -18,7 +21,7 @@ import cognitoidentityserviceprovider from './cognitoIdentityProvider.js'
  * @returns {Object} The user associated with the token
  */
 
-async function getUserFromAuthToken(loginToken, context) {
+async function getUserFromAuthToken(loginToken) {
   const token = loginToken.replace(/bearer\s/gi, "");
 
   const tokenObj = await cognitoAuthToken(token);
@@ -27,7 +30,7 @@ async function getUserFromAuthToken(loginToken, context) {
     throw new Error("No token object");
   }
 
-  const { ok:active, sub: _id, token_use: tokenType } = tokenObj;
+  const { ok: active, token_use: tokenType } = tokenObj;
 
   if (!active) {
     Logger.debug("Bearer token is expired");
@@ -44,9 +47,9 @@ async function getUserFromAuthToken(loginToken, context) {
   const params = {
     AccessToken: token
   };
-  const currentUser = cognitoidentityserviceprovider.getUser(params, function(err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
-      else console.log(data);           // successful response
+  const currentUser = cognitoidentityserviceprovider.getUser(params, (err, data) => {
+    if (err) console.log(err, err.stack); // an error occurred
+    else console.log(data); // successful response
   });
 
   if (!currentUser) {

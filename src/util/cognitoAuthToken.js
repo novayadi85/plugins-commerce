@@ -1,8 +1,4 @@
-import fetch from "node-fetch";
-import config from "../config.js";
 import claimsJWT from "./decode-verify-jwt.js";
-const { HYDRA_OAUTH2_INTROSPECT_URL } = config;
-
 /**
  * Given an Authorization Bearer token it returns a JSON object with user
  * properties and claims found
@@ -23,8 +19,6 @@ export default async function cognitoAuthToken(token) {
   */
   const response = await claimsJWT(token);
 
-  console.log(response)
-  
   if (!response.ok) throw new Error("Error introspecting token");
 
   return response.json();

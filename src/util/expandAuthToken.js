@@ -1,6 +1,4 @@
-import fetch from "node-fetch";
 import claimsJWT from "./decode-verify-jwt.js";
-import config from "../config.js";
 /**
  * Given an Authorization Bearer token it returns a JSON object with user
  * properties and claims found
@@ -12,7 +10,6 @@ import config from "../config.js";
  * @returns {Object} JSON object
  */
 export default async function expandAuthToken(token) {
-  
   const response = await claimsJWT(token);
 
   if (!response.ok) throw new Error("Error introspecting token");
