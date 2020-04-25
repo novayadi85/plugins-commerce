@@ -1,6 +1,6 @@
 import Logger from "@reactioncommerce/logger";
 import cognitoAuthToken from "./cognitoAuthToken.js";
-import cognitoidentityserviceprovider from './cognitoIdentityProvider'
+import cognitoidentityserviceprovider from './cognitoIdentityProvider.js'
 
 /**
  * Given an Authorization Bearer token and the current context, returns the user document
