@@ -19,7 +19,11 @@
     "node-fetch": "^2.6.0",
     "simpl-schema": "^1.5.7",
     "jwks-rsa": "^1.8.0",
-    "jsonwebtoken": "^8.5.1"
+    "jsonwebtoken": "^8.5.1",
+    "aws-sdk": "^2.611.0",
+    "debug": "^3.1.0",
+    "jsbn": "^1.1.0",
+    "ms": "^2.1.2"
   },
   "devDependencies": {
     "@reactioncommerce/eslint-config": "~2.1.0",

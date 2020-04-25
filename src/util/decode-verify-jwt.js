@@ -1,6 +1,6 @@
 
-const jwksRsa = require('jwks-rsa')
-const jsonwebtoken = require('jsonwebtoken')
+import jwksRsa from "jwks-rsa";
+import jsonwebtoken from "jsonwebtoken";
 
 const decodeTokenHeader = (token) => {
     const [headerEncoded] = token.split('.')
@@ -82,7 +82,7 @@ const claimRace = async (token) => {
     })
   }
 
-const claimsJWT = async (token) => {
+  export default async (token) => {
     let tokenize
     let isAuthenticated = false
     if (token) {
@@ -99,8 +99,4 @@ const claimsJWT = async (token) => {
     }
   }
 
-
-  module.exports = {
-    claimsJWT,
-  }
   

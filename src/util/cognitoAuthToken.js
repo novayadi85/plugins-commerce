@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import config from "../config.js";
-const { claimsJWT } = require("./decode-verify-jwt.js");
+import claimsJWT from "./decode-verify-jwt.js";
 const { HYDRA_OAUTH2_INTROSPECT_URL } = config;
 
 /**
@@ -14,14 +14,17 @@ const { HYDRA_OAUTH2_INTROSPECT_URL } = config;
  * @returns {Object} JSON object
  */
 export default async function cognitoAuthToken(token) {
-  console.log('==TOKEN==')
-  console.log(token)
+  /*
   const response = await fetch(HYDRA_OAUTH2_INTROSPECT_URL, {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     method: "POST",
     body: `token=${encodeURIComponent(token)}`
   });
+  */
+  const response = await claimsJWT(token);
 
+  console.log(response)
+  
   if (!response.ok) throw new Error("Error introspecting token");
 
   return response.json();

@@ -1,8 +1,6 @@
 import fetch from "node-fetch";
+import claimsJWT from "./decode-verify-jwt.js";
 import config from "../config.js";
-
-const { HYDRA_OAUTH2_INTROSPECT_URL } = config;
-
 /**
  * Given an Authorization Bearer token it returns a JSON object with user
  * properties and claims found
@@ -14,11 +12,8 @@ const { HYDRA_OAUTH2_INTROSPECT_URL } = config;
  * @returns {Object} JSON object
  */
 export default async function expandAuthToken(token) {
-  const response = await fetch(HYDRA_OAUTH2_INTROSPECT_URL, {
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    method: "POST",
-    body: `token=${encodeURIComponent(token)}`
-  });
+  
+  const response = await claimsJWT(token);
 
   if (!response.ok) throw new Error("Error introspecting token");
 
