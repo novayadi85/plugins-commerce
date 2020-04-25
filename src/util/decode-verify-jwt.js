@@ -78,19 +78,20 @@ const claimRace = async (token) => {
 };
 
 export default async (token) => {
-  let tokenize;
+  let tokenize = {};
   let isAuthenticated = false;
   if (token) {
     tokenize = await claimRace(token);
     const { error } = tokenize;
     if (error !== true) {
+      // console.log(error)
       isAuthenticated = true;
     }
   }
 
   return {
-    tokenize,
-    isAuthenticated
+    ...tokenize,
+    ok: isAuthenticated
   };
 };
 

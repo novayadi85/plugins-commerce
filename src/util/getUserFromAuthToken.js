@@ -1,10 +1,23 @@
 /* eslint-disable require-jsdoc */
 /* eslint-disable no-console */
 import Logger from "@reactioncommerce/logger";
-import CognitoIdentityServiceProvider from "aws-sdk/clients/cognitoidentityserviceprovider";
+import AWS from "aws-sdk";
+import config from "../config.js";
 import cognitoAuthToken from "./cognitoAuthToken.js";
 
-const cognitoidentityserviceprovider = new CognitoIdentityServiceProvider();
+const {
+  AWS_POOL_IDENTITY_POOL,
+  AWS_ACCESS_KEY_ID,
+  AWS_SECRET_KEY,
+  AWS_REGION
+} = config;
+
+AWS.config.update({
+  accessKeyId: AWS_ACCESS_KEY_ID,
+  secretAccessKey: AWS_SECRET_KEY,
+  region: AWS_REGION
+});
+
 /**
  * Given an Authorization Bearer token and the current context, returns the user document
  * for that token after performing token checks.
@@ -25,13 +38,14 @@ async function getUserFromAuthToken(loginToken) {
   const token = loginToken.replace(/bearer\s/gi, "");
 
   const tokenObj = await cognitoAuthToken(token);
+
   if (!tokenObj) {
     Logger.debug("No token object");
     throw new Error("No token object");
   }
 
   const { ok: active, token_use: tokenType } = tokenObj;
-
+  console.log(tokenObj);
   if (!active) {
     Logger.debug("Bearer token is expired");
     throw new Error("Bearer token is expired");
@@ -47,8 +61,18 @@ async function getUserFromAuthToken(loginToken) {
   const params = {
     AccessToken: token
   };
+
+  AWS.config.region = AWS_REGION;
+
+  AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    IdentityPoolId: `${AWS_POOL_IDENTITY_POOL}`
+  });
+
+  const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
+
+
   const currentUser = cognitoidentityserviceprovider.getUser(params, (err, data) => {
-    if (err) console.log(err, err.stack); // an error occurred
+    if (err) console.log(err); // an error occurred
     else console.log(data); // successful response
   });
 

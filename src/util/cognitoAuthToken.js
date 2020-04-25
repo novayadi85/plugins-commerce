@@ -17,9 +17,12 @@ export default async function cognitoAuthToken(token) {
     body: `token=${encodeURIComponent(token)}`
   });
   */
-  const response = await claimsJWT(token);
 
-  if (!response.ok) throw new Error("Error introspecting token");
+  const { ok, payloads } = await claimsJWT(token);
+  if (!ok) throw new Error("Error introspecting token");
 
-  return response.json();
+  return {
+    ...payloads,
+    ok
+  };
 }
