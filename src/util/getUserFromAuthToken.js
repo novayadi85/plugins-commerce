@@ -7,14 +7,10 @@ import cognitoAuthToken from "./cognitoAuthToken.js";
 
 const {
   AWS_POOL_IDENTITY_POOL,
-  AWS_ACCESS_KEY_ID,
-  AWS_SECRET_KEY,
   AWS_REGION
 } = config;
 
 AWS.config.update({
-  accessKeyId: AWS_ACCESS_KEY_ID,
-  secretAccessKey: AWS_SECRET_KEY,
   region: AWS_REGION
 });
 
