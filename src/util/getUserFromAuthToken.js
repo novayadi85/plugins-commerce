@@ -18,6 +18,11 @@ AWS.config.update({
   region: AWS_REGION
 });
 
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+  IdentityPoolId: `${AWS_POOL_IDENTITY_POOL}`,
+  region: AWS_REGION
+});
+
 /**
  * Given an Authorization Bearer token and the current context, returns the user document
  * for that token after performing token checks.
@@ -34,6 +39,15 @@ AWS.config.update({
  * @returns {Object} The user associated with the token
  */
 
+async function getCurrentUser(token) {
+  const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
+  const params = {
+    AccessToken: token
+  };
+
+  return cognitoidentityserviceprovider.getUser(params).promise();
+}
+
 async function getUserFromAuthToken(loginToken) {
   const token = loginToken.replace(/bearer\s/gi, "");
 
@@ -45,7 +59,7 @@ async function getUserFromAuthToken(loginToken) {
   }
 
   const { ok: active, token_use: tokenType } = tokenObj;
-  console.log(tokenObj);
+
   if (!active) {
     Logger.debug("Bearer token is expired");
     throw new Error("Bearer token is expired");
@@ -58,30 +72,43 @@ async function getUserFromAuthToken(loginToken) {
 
   // const currentUser = await context.collections.users.findOne({ _id });
 
-  const params = {
-    AccessToken: token
-  };
+  const activeUser = await getCurrentUser(token);
 
-  AWS.config.region = AWS_REGION;
-
-  AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: `${AWS_POOL_IDENTITY_POOL}`
-  });
-
-  const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
-
-
-  const currentUser = cognitoidentityserviceprovider.getUser(params, (err, data) => {
-    if (err) console.log(err); // an error occurred
-    else console.log(data); // successful response
-  });
-
-  if (!currentUser) {
+  if (!activeUser) {
     Logger.error("Bearer token specifies a user ID that does not exist");
     throw new Error("Bearer token specifies a user ID that does not exist");
   }
 
-  return currentUser;
+
+  const { UserAttributes } = activeUser;
+  let user = {};
+  UserAttributes.map((item) => {
+    const { Name, Value } = item;
+    user = {
+      ...user,
+      [Name]: Value
+    };
+    return user;
+  });
+
+  user = {
+    ...user,
+    emails: [
+      {
+        address: user.email,
+        verified: (user.email_verified === "true"),
+        provides: "cognito"
+      }
+    ],
+    name: `${user.given_name} ${user.family_name}`,
+    profile: {
+      firstName: user.given_name,
+      lastName: user.family_name
+    },
+    _id: activeUser.Username
+  };
+
+  return user;
 }
 
 export default getUserFromAuthToken;

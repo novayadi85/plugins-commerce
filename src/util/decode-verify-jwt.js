@@ -1,6 +1,15 @@
 
 import jwksRsa from "jwks-rsa";
 import jsonwebtoken from "jsonwebtoken";
+import config from "../config.js";
+
+const {
+  AWS_POOL_IDENTITY_POOL,
+  AWS_CLIENT_ID,
+  AWS_POOL_ID,
+  AWS_REGION
+} = config;
+
 
 const decodeTokenHeader = (token) => {
   const [headerEncoded] = token.split(".");
@@ -27,7 +36,7 @@ const verifyCognitoToken = async (token, decoded) => {
     const decode = new Promise((resolve, reject) => {
       const header = decodeTokenHeader(token);
       const client = jwksRsa({
-        jwksUri: `https://cognito-idp.ap-southeast-1.amazonaws.com/${decoded.AWS_POOL_ID}/.well-known/jwks.json`
+        jwksUri: `https://cognito-idp.${decoded.AWS_REGION}.amazonaws.com/${decoded.AWS_POOL_ID}/.well-known/jwks.json`
       });
 
       client.getSigningKey(header.kid, async (error, key) => {
@@ -67,9 +76,10 @@ const verifyCognitoToken = async (token, decoded) => {
 const claimRace = async (token) => {
   const configs = [
     {
-      AWS_POOL_ID: "ap-southeast-1_e57ycKFCA",
-      AWS_CLIENT_ID: "5evmpaibahaiq9dl8fu6hhsnc3",
-      AWS_POOL_IDENTITY_POOL: ""
+      AWS_POOL_ID,
+      AWS_CLIENT_ID,
+      AWS_POOL_IDENTITY_POOL,
+      AWS_REGION
     }
   ];
 
