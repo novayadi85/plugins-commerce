@@ -38,7 +38,7 @@
     "eslint-plugin-react-hooks": "^2.0.1",
     "semantic-release": "^17.0.4",
     "acorn": ">=7.1.1",
-    "minimist": ">=0.2.1"
+    "minimist": ">=1.2.6"
   },
   "scripts": {
     "lint": "npm run lint:eslint",
